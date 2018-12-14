@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+	id 'eclipse'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'javax.media:jmf:2.1.1e'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+mainClassName = 'com.github.thomasfox.videowindmeasurement.App'
