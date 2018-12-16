@@ -1,18 +1,21 @@
-package com.github.thomasfox.videowindmeasurement.fx;
+package com.github.thomasfox.videowindmeasurement.fx.video;
 
 import java.util.List;
 
+import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
 import com.github.thomasfox.videowindmeasurement.model.Landmarks;
 import com.github.thomasfox.videowindmeasurement.model.Position;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Transform;
 
 public class LandmarkButton extends Button
 {
@@ -89,36 +92,39 @@ public class LandmarkButton extends Button
       
       if (currentLandmarks == null)
       {
+        double mediaWidth = mediaView.getMediaPlayer().getMedia().getWidth();
+        double mediaHeight = mediaView.getMediaPlayer().getMedia().getHeight();
+        
+        double scale = GraphicsUtil.getScale(mediaWidth, mediaHeight, mediaView.getFitWidth(), mediaView.getFitHeight());
+        
+        double canvasWidth = scale * mediaWidth;
+        double canvasHeight = scale * mediaHeight;
+        
         WritableImage image = new WritableImage(
-            mediaView.getMediaPlayer().getMedia().getWidth(),
-            mediaView.getMediaPlayer().getMedia().getHeight());
-        mediaView.snapshot(null, image);
+            new Double(canvasWidth).intValue(),
+            new Double(canvasHeight).intValue());
+        final SnapshotParameters snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setTransform(Transform.scale(1/scale, 1/scale));
+        mediaView.snapshot(snapshotParameters, image);
         
-        double scale = Math.min(
-            mediaView.getFitWidth() / image.getWidth(), 
-            mediaView.getFitHeight() / image.getHeight());
-        
-        double canvasWidth = scale * image.getWidth();
-        double canvasHeight = scale * image.getHeight();
         canvasLayer.setWidth(canvasWidth);
         canvasLayer.setHeight(canvasHeight);
         
         canvasLayer.setOnMouseClicked((event) -> {
-          GraphicsContext gc1 = canvasLayer.getGraphicsContext2D();
+          GraphicsContext graphicsContext = canvasLayer.getGraphicsContext2D();
           if (markIndex == 0)
           {
-            gc1.setStroke(Color.BLACK);
+            graphicsContext.setStroke(Color.BLACK);
           }
           else if (markIndex == 1)
           {
-            gc1.setStroke(Color.WHITE);
+            graphicsContext.setStroke(Color.WHITE);
           }
           else 
           {
-            gc1.setStroke(Color.RED);
+            graphicsContext.setStroke(Color.RED);
           }
-          gc1.strokeLine(event.getX() - 20, event.getY(), event.getX() + 20, event.getY());
-          gc1.strokeLine(event.getX(), event.getY() - 20, event.getX(), event.getY() + 20);
+          GraphicsUtil.drawCross(graphicsContext, event.getX(), event.getY());
           markIndex ++;
           currentLandmarks.getPositions().add(new Position(event.getX() / scale, event.getY() / scale));
           if (markIndex > 2)

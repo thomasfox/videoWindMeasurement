@@ -1,4 +1,4 @@
-package com.github.thomasfox.videowindmeasurement.fx;
+package com.github.thomasfox.videowindmeasurement.fx.video;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

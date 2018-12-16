@@ -1,4 +1,4 @@
-package com.github.thomasfox.videowindmeasurement.fx;
+package com.github.thomasfox.videowindmeasurement.fx.video;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -117,9 +117,9 @@ public class PlayerPane extends BorderPane
     MediaView mediaView = new MediaView(mediaPlayer);
     Canvas canvasLayer = new Canvas();
 
-    Pane mvPane = new Pane(mediaView, canvasLayer);
-    mvPane.setStyle("-fx-background-color: black;");
-    setCenter(mvPane);
+    Pane videoPane = new Pane(mediaView, canvasLayer);
+    videoPane.setStyle("-fx-background-color: black;");
+    setCenter(videoPane);
 
     mediaPlayer.currentTimeProperty().addListener(new InvalidationListener()
     {
@@ -139,6 +139,9 @@ public class PlayerPane extends BorderPane
         mediaView.setPreserveRatio(true);
         mediaView.setFitWidth(mediaView.getScene().getWidth());
         mediaView.setFitHeight(mediaView.getScene().getHeight() - controlBar.getHeight());
+        saveLandmarksButton.setImageWidthAndHeight(
+            mediaView.getMediaPlayer().getMedia().getWidth(),
+            mediaView.getMediaPlayer().getMedia().getHeight());
       }
     });
 

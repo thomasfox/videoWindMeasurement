@@ -31,10 +31,12 @@
  */
 package com.github.thomasfox.videowindmeasurement;
 
+import java.io.File;
 import java.net.MalformedURLException;
 
 import com.github.thomasfox.videowindmeasurement.fx.AppMenuBar;
-import com.github.thomasfox.videowindmeasurement.fx.PlayerPane;
+import com.github.thomasfox.videowindmeasurement.fx.landmarkfile.ViewerPane;
+import com.github.thomasfox.videowindmeasurement.fx.video.PlayerPane;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -43,24 +45,59 @@ import javafx.stage.Stage;
 
 public class App extends Application 
 {
+  private Stage stage;
+  
+  private AppMenuBar menuBar = new AppMenuBar(stage, this::loadFile);
 
+  
   @Override
   public void start(Stage stage) throws MalformedURLException 
   {
+    this.stage = stage;
     stage.setTitle("Windspeed rotation detection");
     
     VBox root = new VBox();
     Scene scene = new Scene(root, 1000, 900);
     
-    PlayerPane playerPane = new PlayerPane();
-    AppMenuBar menuBar = new AppMenuBar(stage, playerPane::loadFile);
-    
     root.getChildren().addAll(menuBar);
-    root.getChildren().addAll(playerPane);
     
     stage.setScene(scene);
     stage.sizeToScene();
     stage.show();
+  }
+  
+  public void loadFile(File file)
+  {
+    if (file.getName().endsWith(".mp4"))
+    {
+      VBox root = new VBox();
+      Scene scene = new Scene(root, 1000, 900);
+      
+      PlayerPane playerPane = new PlayerPane();
+      playerPane.loadFile(file);
+      
+      root.getChildren().addAll(menuBar);
+      root.getChildren().addAll(playerPane);
+      
+      stage.setScene(scene);
+      stage.sizeToScene();
+      stage.show();
+    }
+    else if (file.getName().endsWith(".xml"))
+    {
+      VBox root = new VBox();
+      Scene scene = new Scene(root, 1000, 900);
+      
+      ViewerPane viewerPane = new ViewerPane(scene);
+      
+      root.getChildren().addAll(menuBar);
+      root.getChildren().addAll(viewerPane);
+      
+      stage.setScene(scene);
+      stage.sizeToScene();
+      stage.show();
+      viewerPane.loadFile(file);
+    }
   }
   
   public static void main(String[] args) 

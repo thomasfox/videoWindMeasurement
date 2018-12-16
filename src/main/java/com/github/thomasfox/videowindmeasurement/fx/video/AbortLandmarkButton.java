@@ -1,4 +1,4 @@
-package com.github.thomasfox.videowindmeasurement.fx;
+package com.github.thomasfox.videowindmeasurement.fx.video;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

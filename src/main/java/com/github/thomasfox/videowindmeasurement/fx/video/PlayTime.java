@@ -1,4 +1,4 @@
-package com.github.thomasfox.videowindmeasurement.fx;
+package com.github.thomasfox.videowindmeasurement.fx.video;
 
 import javafx.scene.control.Label;
 import javafx.util.Duration;
