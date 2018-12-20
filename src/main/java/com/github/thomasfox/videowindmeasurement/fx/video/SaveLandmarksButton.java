@@ -48,7 +48,7 @@ public class SaveLandmarksButton extends Button
     {
       LandmarksXmlUtil writer = new LandmarksXmlUtil();
       writer.addLandmarks(landmarksList, imageWidth, imageHeight);
-      writer.saveToXML("landmarks.xml");
+      writer.saveToXML("landmarks");
     }
   }
 }

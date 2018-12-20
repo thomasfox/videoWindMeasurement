@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-	id 'eclipse'
+    id 'eclipse'
     id 'application'
 }
 
@@ -12,6 +12,7 @@ dependencies {
     implementation 'javax.media:jmf:2.1.1e'
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:1.7.1'
 }
 
 mainClassName = 'com.github.thomasfox.videowindmeasurement.App'

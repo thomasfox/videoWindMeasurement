@@ -2,7 +2,7 @@ package com.github.thomasfox.videowindmeasurement.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Part
+public class Part implements Cloneable
 {
   private String name;
   
@@ -41,5 +41,14 @@ public class Part
   public void setY(int y)
   {
     this.y = y;
+  }
+  
+  public Part clone()
+  {
+    Part copy = new Part();
+    copy.name = this.name;
+    copy.x = this.x;
+    copy.y = this.y;
+    return copy;
   }
 }

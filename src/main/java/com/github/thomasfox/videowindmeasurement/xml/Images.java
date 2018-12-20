@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class Images
+public class Images implements Cloneable
 {
   private List<ImageMeta> images = new ArrayList<>();
 
@@ -18,5 +18,16 @@ public class Images
   public void setImages(List<ImageMeta> images)
   {
     this.images = images;
+  }
+  
+  public Images clone()
+  {
+    Images copy = new Images();
+    copy.images = new ArrayList<>();
+    for (ImageMeta image : this.images)
+    {
+      copy.images.add(image.clone());
+    }
+    return copy;
   }
 }

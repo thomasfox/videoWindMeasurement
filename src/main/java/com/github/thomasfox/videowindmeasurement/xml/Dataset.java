@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "dataset")
 @XmlType(propOrder={"name","comment", "images"})
-public class Dataset
+public class Dataset implements Cloneable
 {
   private String name;
   
@@ -43,4 +43,12 @@ public class Dataset
     this.images = images;
   }
 
+  public Dataset clone()
+  {
+    Dataset copy = new Dataset();
+    copy.name = this.name;
+    copy.comment = this.comment;
+    copy.images = this.images.clone();
+    return copy;
+  }
 }

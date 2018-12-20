@@ -2,7 +2,7 @@ package com.github.thomasfox.videowindmeasurement.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class ImageMeta
+public class ImageMeta implements Cloneable
 {
   private String file;
   
@@ -27,5 +27,14 @@ public class ImageMeta
   public void setBox(Box box)
   {
     this.box = box;
+  }
+  
+  
+  public ImageMeta clone()
+  {
+    ImageMeta copy = new ImageMeta();
+    copy.file = this.file;
+    copy.box = box.clone();
+    return copy;
   }
 }

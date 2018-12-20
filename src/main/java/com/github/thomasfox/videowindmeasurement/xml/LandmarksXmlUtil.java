@@ -79,9 +79,26 @@ public class LandmarksXmlUtil
     }
   }
     
-  public void saveToXML(String xml) 
+  public void saveToXML(String xmlFilenamePrefix) 
   {
-    marshal(new File(xml), dataset);
+    marshal(new File(xmlFilenamePrefix + ".xml"), dataset);
+    saveRotationBinsToXML(xmlFilenamePrefix + ".xml");
+  }
+  
+  public void saveRotationBinsToXML(String xmlFilenamePrefix)
+  {
+    for (int rotationBin=0; rotationBin < 3; rotationBin++)
+    {
+      Dataset singleClassDataset = dataset.clone();
+      for (ImageMeta image : singleClassDataset.getImages().getImages())
+      {
+        if (image.getBox().getRotationBin(3) != rotationBin)
+        {
+          image.setBox(null);
+        }
+      }
+      marshal(new File(xmlFilenamePrefix + "_" + rotationBin + ".xml"), singleClassDataset);
+    }
   }
 
   private double distance(double x1, double y1, double x2, double y2)
