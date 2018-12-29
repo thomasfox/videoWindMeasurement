@@ -64,8 +64,8 @@ public class LandmarksXmlUtil
       imageMeta.setBox(box);
       box.setTop(new Double(boxTopY).intValue());
       box.setLeft(new Double(boxLeftX).intValue());
-      box.setHeight(new Double(2 * radius).intValue());
-      box.setWidth(new Double(2 * radius).intValue());
+      box.setHeight(new Double(2.5 * radius).intValue());
+      box.setWidth(new Double(2.5 * radius).intValue());
       int partCount = 1;
       for (Position position : landmarks.getPositions())
       {
@@ -82,7 +82,7 @@ public class LandmarksXmlUtil
   public void saveToXML(String xmlFilenamePrefix) 
   {
     marshal(new File(xmlFilenamePrefix + ".xml"), dataset);
-    saveRotationBinsToXML(xmlFilenamePrefix + ".xml");
+    saveRotationBinsToXML(xmlFilenamePrefix);
   }
   
   public void saveRotationBinsToXML(String xmlFilenamePrefix)
