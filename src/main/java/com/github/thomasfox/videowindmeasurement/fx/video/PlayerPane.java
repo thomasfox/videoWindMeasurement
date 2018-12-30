@@ -39,6 +39,8 @@ public class PlayerPane extends BorderPane
   private final AbortLandmarkButton abortLandmarkButton;
   
   private final SaveLandmarksButton saveLandmarksButton;
+  
+  private final DetectButton detectButton;
 
   private final HBox controlBar = new HBox();
   
@@ -73,6 +75,9 @@ public class PlayerPane extends BorderPane
 
     saveLandmarksButton = new SaveLandmarksButton(landmarksList);
     controlBar.getChildren().add(saveLandmarksButton);
+
+    detectButton = new DetectButton(playButton);
+    controlBar.getChildren().add(detectButton);
 
     setBottom(controlBar);
   }
@@ -152,6 +157,7 @@ public class PlayerPane extends BorderPane
     volumeSlider.setMediaPlayer(mediaPlayer);
     landmarkButton.setMediaView(mediaView);
     landmarkButton.setCanvasLayer(canvasLayer);
-
+    detectButton.setMediaView(mediaView);
+    detectButton.setCanvasLayer(canvasLayer);
   }
 }
