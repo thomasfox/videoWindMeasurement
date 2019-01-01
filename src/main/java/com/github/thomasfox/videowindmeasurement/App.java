@@ -33,10 +33,13 @@ package com.github.thomasfox.videowindmeasurement;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import com.github.thomasfox.videowindmeasurement.fx.AppMenuBar;
 import com.github.thomasfox.videowindmeasurement.fx.landmarkfile.ViewerPane;
 import com.github.thomasfox.videowindmeasurement.fx.video.PlayerPane;
+import com.github.thomasfox.videowindmeasurement.model.Landmarks;
+import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -78,6 +81,10 @@ public class App extends Application
     
     playerPane = new PlayerPane();
     playerPane.loadFile(file);
+    if (viewerPane != null)
+    {
+      playerPane.setLandmarksList(viewerPane.getLandmarksList());
+    }
     
     root.getChildren().addAll(createMenuBar());
     root.getChildren().addAll(playerPane);
@@ -101,7 +108,13 @@ public class App extends Application
     viewerScene = new Scene(root, 1000, 900);
     
     viewerPane = new ViewerPane(viewerScene);
-    viewerPane.loadFile(file);
+    File directory = file.getParentFile();
+    List<Landmarks> landmarksList = LandmarksXmlWriter.toLandmarks(LandmarksXmlWriter.unmarshal(file), directory);
+    viewerPane.setLandmarksList(landmarksList);
+    if (playerPane != null)
+    {
+      playerPane.setLandmarksList(landmarksList);
+    }
     
     root.getChildren().addAll(createMenuBar());
     root.getChildren().addAll(viewerPane);

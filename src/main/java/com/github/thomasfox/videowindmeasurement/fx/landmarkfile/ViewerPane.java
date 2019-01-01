@@ -7,7 +7,7 @@ import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
 import com.github.thomasfox.videowindmeasurement.model.Landmarks;
 import com.github.thomasfox.videowindmeasurement.model.Position;
 import com.github.thomasfox.videowindmeasurement.xml.Box;
-import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlUtil;
+import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,9 +31,7 @@ public class ViewerPane extends BorderPane
   
   private final HBox controlBar = new HBox();
   
-  private List<Landmarks> dataset;
-  
-  private File directory;
+  private List<Landmarks> landmarksList;
   
   private Scene scene;
   
@@ -55,12 +53,16 @@ public class ViewerPane extends BorderPane
     setBottom(controlBar);
   }
   
-  public void loadFile(File file)
+  public void setLandmarksList(List<Landmarks> landmarksList)
   {
-    directory = file.getParentFile();
-    dataset = LandmarksXmlUtil.toLandmarks(LandmarksXmlUtil.unmarshal(file), directory);
-    forwardButton.setLandmarksList(dataset);
-    show(dataset.get(0));
+    this.landmarksList = landmarksList;
+    forwardButton.setLandmarksList(landmarksList);
+    show(landmarksList.get(0));
+  }
+  
+  public List<Landmarks> getLandmarksList()
+  {
+    return landmarksList;
   }
   
   public void show(Landmarks landmarks)

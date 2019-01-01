@@ -21,11 +21,16 @@ public class LandmarkButton extends Button
 {
   private LandmarkActionHandler landmarkActionHandler;
 
-  public LandmarkButton(List<Landmarks> landmarksList, PlayButton playButton)
+  public LandmarkButton(PlayButton playButton)
   {
     super("Landmark");
-    landmarkActionHandler = new LandmarkActionHandler(landmarksList, playButton);
+    landmarkActionHandler = new LandmarkActionHandler(playButton);
     setOnAction(landmarkActionHandler);
+  }
+  
+  public void setLandmarksList(List<Landmarks> landmarksList)
+  {
+    landmarkActionHandler.setLandmarksList(landmarksList);
   }
   
   public void setMediaView(MediaView mediaView)
@@ -57,10 +62,14 @@ public class LandmarkButton extends Button
     
     private Landmarks currentLandmarks;
     
-    public LandmarkActionHandler(List<Landmarks> landmarksList, PlayButton playButton)
+    public LandmarkActionHandler(PlayButton playButton)
+    {
+      this.playButton = playButton;
+    }
+
+    public void setLandmarksList(List<Landmarks> landmarksList)
     {
       this.landmarksList = landmarksList;
-      this.playButton = playButton;
     }
 
     public void setCanvasLayer(Canvas canvasLayer)
@@ -135,7 +144,6 @@ public class LandmarkButton extends Button
         });
         currentLandmarks = new Landmarks(image);
       }
-
     }
 
     public void setMediaView(MediaView mediaView)

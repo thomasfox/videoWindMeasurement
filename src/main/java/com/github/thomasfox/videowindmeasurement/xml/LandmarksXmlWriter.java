@@ -19,17 +19,17 @@ import com.github.thomasfox.videowindmeasurement.model.Position;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
-public class LandmarksXmlUtil
+public class LandmarksXmlWriter
 {
   private Dataset dataset = new Dataset();
  
-  public LandmarksXmlUtil()
+  public LandmarksXmlWriter()
   {
     dataset.setName("Training for rotation detector");
     dataset.setComment("Created by VideoWindMeasurement");
    }
   
-  public void addLandmarks(List<Landmarks> landmarksList, int width, int height)
+  public void addLandmarksAndSaveImages(List<Landmarks> landmarksList, File directory, int width, int height)
   {
     int imageCounter = 1;
     for (Landmarks landmarks : landmarksList)
@@ -46,7 +46,7 @@ public class LandmarksXmlUtil
         {
           image = image.getSubimage(0, 0, width, height);
         }
-        ImageIO.write(image, "png", new File(imageFileName));
+        ImageIO.write(image, "png", new File(directory, imageFileName));
       }
       catch (IOException e)
       {
@@ -67,13 +67,13 @@ public class LandmarksXmlUtil
     }
   }
     
-  public void saveToXML(String xmlFilenamePrefix) 
+  public void saveToXML(String xmlFilenamePrefix, File directory) 
   {
-    marshal(new File(xmlFilenamePrefix + ".xml"), dataset);
-    saveRotationBinsToXML(xmlFilenamePrefix);
+    marshal(new File(directory, xmlFilenamePrefix + ".xml"), dataset);
+    saveRotationBinsToXML(xmlFilenamePrefix, directory);
   }
   
-  public void saveRotationBinsToXML(String xmlFilenamePrefix)
+  public void saveRotationBinsToXML(String xmlFilenamePrefix, File directory)
   {
     for (int rotationBin=0; rotationBin < 3; rotationBin++)
     {
@@ -85,13 +85,8 @@ public class LandmarksXmlUtil
           image.setBox(null);
         }
       }
-      marshal(new File(xmlFilenamePrefix + "_" + rotationBin + ".xml"), singleClassDataset);
+      marshal(new File(directory, xmlFilenamePrefix + "_" + rotationBin + ".xml"), singleClassDataset);
     }
-  }
-
-  private double distance(double x1, double y1, double x2, double y2)
-  {
-    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
   }
 
   public static void marshal(File xmlFile, Object jaxbElement)
