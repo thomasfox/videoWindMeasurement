@@ -47,7 +47,7 @@ public class App extends Application
 {
   private Stage stage;
   
-  private AppMenuBar menuBar = new AppMenuBar(stage, this::loadFile);
+  private AppMenuBar menuBar = new AppMenuBar(stage, this::loadVideoFile, this::loadLandmarkFile);
 
   
   @Override
@@ -66,38 +66,36 @@ public class App extends Application
     stage.show();
   }
   
-  public void loadFile(File file)
+  public void loadVideoFile(File file)
   {
-    if (file.getName().endsWith(".mp4"))
-    {
-      VBox root = new VBox();
-      Scene scene = new Scene(root, 1000, 900);
-      
-      PlayerPane playerPane = new PlayerPane();
-      playerPane.loadFile(file);
-      
-      root.getChildren().addAll(menuBar);
-      root.getChildren().addAll(playerPane);
-      
-      stage.setScene(scene);
-      stage.sizeToScene();
-      stage.show();
-    }
-    else if (file.getName().endsWith(".xml"))
-    {
-      VBox root = new VBox();
-      Scene scene = new Scene(root, 1000, 900);
-      
-      ViewerPane viewerPane = new ViewerPane(scene);
-      
-      root.getChildren().addAll(menuBar);
-      root.getChildren().addAll(viewerPane);
-      
-      stage.setScene(scene);
-      stage.sizeToScene();
-      stage.show();
-      viewerPane.loadFile(file);
-    }
+    VBox root = new VBox();
+    Scene scene = new Scene(root, 1000, 900);
+    
+    PlayerPane playerPane = new PlayerPane();
+    playerPane.loadFile(file);
+    
+    root.getChildren().addAll(menuBar);
+    root.getChildren().addAll(playerPane);
+    
+    stage.setScene(scene);
+    stage.sizeToScene();
+    stage.show();
+  }
+  
+  public void loadLandmarkFile(File file)
+  {
+    VBox root = new VBox();
+    Scene scene = new Scene(root, 1000, 900);
+    
+    ViewerPane viewerPane = new ViewerPane(scene);
+    
+    root.getChildren().addAll(menuBar);
+    root.getChildren().addAll(viewerPane);
+    
+    stage.setScene(scene);
+    stage.sizeToScene();
+    stage.show();
+    viewerPane.loadFile(file);
   }
   
   public static void main(String[] args) 

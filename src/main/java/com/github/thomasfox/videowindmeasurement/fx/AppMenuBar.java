@@ -14,15 +14,26 @@ import javafx.stage.Stage;
 
 public class AppMenuBar extends MenuBar
 {
-  public AppMenuBar(final Stage stage, Consumer<File> onFileLoaded)
+  public AppMenuBar(final Stage stage, Consumer<File> onVideoFileLoaded, Consumer<File> onLandmarkFileLoaded)
   {
     Menu menuFile = new Menu("File");
     getMenus().add(menuFile);
     
-    MenuItem load = new MenuItem("Load");
-    load.setOnAction(new OnLoadActionHandler(stage, onFileLoaded));
+    MenuItem loadVideo = new MenuItem("Load Video");
+    loadVideo.setOnAction(new OnLoadActionHandler(
+        stage, 
+        "Load Video", 
+        new FileChooser.ExtensionFilter("Video Files", "*.mp4"),
+        onVideoFileLoaded));
+    menuFile.getItems().addAll(loadVideo);
 
-    menuFile.getItems().addAll(load);
+    MenuItem loadLandmarks = new MenuItem("Load Landmarks");
+    loadLandmarks.setOnAction(new OnLoadActionHandler(
+        stage, 
+        "Load Landmarks", 
+        new FileChooser.ExtensionFilter("Landmark Files", "*.xml"),
+        onLandmarkFileLoaded));
+    menuFile.getItems().addAll(loadLandmarks);
   }
   
   private static class OnLoadActionHandler implements EventHandler<ActionEvent>
@@ -33,10 +44,16 @@ public class AppMenuBar extends MenuBar
     
     private final Consumer<File> onFileLoaded;
 
-    public OnLoadActionHandler(Stage stage, Consumer<File> onFileLoaded)
+    public OnLoadActionHandler(
+        Stage stage, 
+        String fileChooserTitle, 
+        FileChooser.ExtensionFilter extensionFilter, 
+        Consumer<File> onFileLoaded)
     {
       this.stage = stage;
       this.onFileLoaded = onFileLoaded;
+      this.fileChooser.setTitle(fileChooserTitle);
+      this.fileChooser.getExtensionFilters().add(extensionFilter);
     }
     
     public void handle(ActionEvent t) 
@@ -47,6 +64,5 @@ public class AppMenuBar extends MenuBar
         onFileLoaded.accept(file);
       }
     }
-    
   }
 }
