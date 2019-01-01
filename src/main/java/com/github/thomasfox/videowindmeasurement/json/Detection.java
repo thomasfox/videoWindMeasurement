@@ -9,4 +9,6 @@ public class Detection
   public int left;
   
   public int right;
+  
+  public int index;
 }
