@@ -3,6 +3,8 @@ package com.github.thomasfox.videowindmeasurement.xml;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -15,6 +17,7 @@ import com.github.thomasfox.videowindmeasurement.model.Landmarks;
 import com.github.thomasfox.videowindmeasurement.model.Position;
 
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 
 public class LandmarksXmlUtil
 {
@@ -49,23 +52,8 @@ public class LandmarksXmlUtil
       {
         throw new RuntimeException(e);
       }
-      Double boxCenterX = (landmarks.getPositions().get(0).getX()
-          + landmarks.getPositions().get(1).getX() 
-          + landmarks.getPositions().get(2).getX()) / 3d;
-      Double boxCenterY = (landmarks.getPositions().get(0).getY()
-          + landmarks.getPositions().get(1).getY() 
-          + landmarks.getPositions().get(2).getY()) / 3d;
-      double radius = (distance(landmarks.getPositions().get(0).getX(), landmarks.getPositions().get(0).getY(), boxCenterX, boxCenterY)
-          + distance(landmarks.getPositions().get(1).getX(), landmarks.getPositions().get(1).getY(), boxCenterX, boxCenterY)
-          + distance(landmarks.getPositions().get(2).getX(), landmarks.getPositions().get(2).getY(), boxCenterX, boxCenterY)) / 3;
-      Double boxLeftX = boxCenterX - radius;
-      Double boxTopY = boxCenterY - radius;
-      Box box = new Box();
+      Box box = landmarks.getBox();
       imageMeta.setBox(box);
-      box.setTop(new Double(boxTopY).intValue());
-      box.setLeft(new Double(boxLeftX).intValue());
-      box.setHeight(new Double(2.5 * radius).intValue());
-      box.setWidth(new Double(2.5 * radius).intValue());
       int partCount = 1;
       for (Position position : landmarks.getPositions())
       {
@@ -134,5 +122,29 @@ public class LandmarksXmlUtil
     {
       throw new RuntimeException(e);
     }
+  }
+  
+  public static List<Landmarks> toLandmarks(Dataset dataset, File directory)
+  {
+    List<Landmarks> result = new ArrayList<>();
+    for (ImageMeta imageMeta : dataset.getImages().getImages())
+    {
+      Image image;
+      try
+      {
+        image = new Image(new File(directory, imageMeta.getFile()).toURI().toURL().toString());
+      }
+      catch (MalformedURLException e)
+      {
+        throw new RuntimeException(e);
+      }
+      Landmarks landmarks = new Landmarks(image);
+      for (Part part : imageMeta.getBox().getParts())
+      {
+        landmarks.getPositions().add(new Position(part.getX(), part.getY()));
+      }
+      result.add(landmarks);
+    }
+    return result;
   }
 }

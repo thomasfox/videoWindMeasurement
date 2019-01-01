@@ -1,14 +1,13 @@
 package com.github.thomasfox.videowindmeasurement.fx.landmarkfile;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.util.List;
 
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
+import com.github.thomasfox.videowindmeasurement.model.Landmarks;
+import com.github.thomasfox.videowindmeasurement.model.Position;
 import com.github.thomasfox.videowindmeasurement.xml.Box;
-import com.github.thomasfox.videowindmeasurement.xml.Dataset;
-import com.github.thomasfox.videowindmeasurement.xml.ImageMeta;
 import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlUtil;
-import com.github.thomasfox.videowindmeasurement.xml.Part;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,7 +31,7 @@ public class ViewerPane extends BorderPane
   
   private final HBox controlBar = new HBox();
   
-  private Dataset dataset;
+  private List<Landmarks> dataset;
   
   private File directory;
   
@@ -58,24 +57,15 @@ public class ViewerPane extends BorderPane
   
   public void loadFile(File file)
   {
-    dataset = LandmarksXmlUtil.unmarshal(file);
     directory = file.getParentFile();
-    forwardButton.setDataset(dataset);
-    show(dataset.getImages().getImages().get(0));
+    dataset = LandmarksXmlUtil.toLandmarks(LandmarksXmlUtil.unmarshal(file), directory);
+    forwardButton.setLandmarksList(dataset);
+    show(dataset.get(0));
   }
   
-  public void show(ImageMeta imageMeta)
+  public void show(Landmarks landmarks)
   {
-    Image image;
-    try
-    {
-      image = new Image(new File(directory, imageMeta.getFile()).toURI().toURL().toString());
-    }
-    catch (MalformedURLException e)
-    {
-      throw new RuntimeException(e);
-    }
-    
+    Image image = landmarks.getImage();
     double maxWidth = scene.getWidth();
     double maxHeight = scene.getHeight() - controlBar.getHeight();
     double scale = GraphicsUtil.getScale(
@@ -95,21 +85,21 @@ public class ViewerPane extends BorderPane
     canvasLayer.setWidth(canvasWidth);
     canvasLayer.setHeight(canvasHeight);
 
-    
-    Box box = imageMeta.getBox();
+    Box box = landmarks.getBox();
     GraphicsContext graphicsContext = canvasLayer.getGraphicsContext2D();
     graphicsContext.clearRect(0, 0, canvasLayer.getWidth(), canvasLayer.getHeight());
     graphicsContext.setStroke(Color.BLUE);
     graphicsContext.setLineWidth(2);
     graphicsContext.strokeRect(box.getLeft() * scale, box.getTop() * scale, box.getWidth() * scale, box.getHeight() * scale);
     
-    for (Part part : box.getParts())
+    int positionNumber = 0;
+    for (Position position : landmarks.getPositions())
     {
-      if ("1".equals(part.getName()))
+      if (positionNumber == 0)
       {
         graphicsContext.setStroke(Color.BLACK);
       }
-      else if ("2".equals(part.getName()))
+      else if (positionNumber == 1)
       {
         graphicsContext.setStroke(Color.WHITE);
       }
@@ -117,8 +107,8 @@ public class ViewerPane extends BorderPane
       {
         graphicsContext.setStroke(Color.RED);
       }
-      GraphicsUtil.drawCross(graphicsContext, part.getX() * scale, part.getY() * scale);
+      GraphicsUtil.drawCross(graphicsContext, position.getX() * scale, position.getY() * scale);
+      positionNumber++;
     }
-
   }
 }

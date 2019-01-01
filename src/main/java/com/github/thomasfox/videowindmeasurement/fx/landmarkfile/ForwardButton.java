@@ -2,8 +2,7 @@ package com.github.thomasfox.videowindmeasurement.fx.landmarkfile;
 
 import java.util.List;
 
-import com.github.thomasfox.videowindmeasurement.xml.Dataset;
-import com.github.thomasfox.videowindmeasurement.xml.ImageMeta;
+import com.github.thomasfox.videowindmeasurement.model.Landmarks;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,16 +19,16 @@ public class ForwardButton extends Button
     setOnAction(forwardActionHandler);
   }
   
-  public void setDataset(Dataset dataset)
+  public void setLandmarksList(List<Landmarks> landmarksList)
   {
-    forwardActionHandler.setDataset(dataset);
+    forwardActionHandler.setLandmarksList(landmarksList);
   }
   
   private static class ForwardActionHandler implements EventHandler<ActionEvent>
   {
     private ViewerPane viewerPane;
     
-    private Dataset dataset;
+    private List<Landmarks> landmarksList;
     
     private int position = 0;
     
@@ -40,19 +39,18 @@ public class ForwardButton extends Button
 
     public void handle(ActionEvent e)
     {
-      List<ImageMeta> imageList = dataset.getImages().getImages();
-      if (position >= imageList.size() - 1)
+      if (position >= landmarksList.size() - 1)
       {
         return;
       }
       position++;
-      ImageMeta image = imageList.get(position);
-      viewerPane.show(image);
+      Landmarks landmarks = landmarksList.get(position);
+      viewerPane.show(landmarks);
     }
 
-    public void setDataset(Dataset dataset)
+    public void setLandmarksList(List<Landmarks> landmarksList)
     {
-      this.dataset = dataset;
+      this.landmarksList = landmarksList;
     }
   }
 }
