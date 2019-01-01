@@ -14,7 +14,18 @@ import javafx.stage.Stage;
 
 public class AppMenuBar extends MenuBar
 {
-  public AppMenuBar(final Stage stage, Consumer<File> onVideoFileLoaded, Consumer<File> onLandmarkFileLoaded)
+  public AppMenuBar(
+      final Stage stage,
+      Consumer<File> onVideoFileLoaded,
+      Consumer<File> onLandmarkFileLoaded,
+      Runnable onViewVideo,
+      Runnable onViewLandmarks)
+  {
+    addFileMenu(stage, onVideoFileLoaded, onLandmarkFileLoaded);
+    addViewMenu(stage, onViewVideo, onViewLandmarks);
+  }
+  
+  private void addFileMenu(final Stage stage, Consumer<File> onVideoFileLoaded, Consumer<File> onLandmarkFileLoaded)
   {
     Menu menuFile = new Menu("File");
     getMenus().add(menuFile);
@@ -33,7 +44,21 @@ public class AppMenuBar extends MenuBar
         "Load Landmarks", 
         new FileChooser.ExtensionFilter("Landmark Files", "*.xml"),
         onLandmarkFileLoaded));
-    menuFile.getItems().addAll(loadLandmarks);
+    menuFile.getItems().addAll(loadLandmarks);    
+  }
+  
+  private void addViewMenu(final Stage stage, Runnable onViewVideo, Runnable onViewLandmarks)
+  {
+    Menu menuView = new Menu("View");
+    getMenus().add(menuView);
+    
+    MenuItem showVideo = new MenuItem("Show Video");
+    showVideo.setOnAction(new OnViewActionHandler(onViewVideo));
+    menuView.getItems().addAll(showVideo);
+
+    MenuItem showLandmarks = new MenuItem("Load Landmarks");
+    showLandmarks.setOnAction(new OnViewActionHandler(onViewLandmarks));
+    menuView.getItems().addAll(showLandmarks);    
   }
   
   private static class OnLoadActionHandler implements EventHandler<ActionEvent>
@@ -56,13 +81,28 @@ public class AppMenuBar extends MenuBar
       this.fileChooser.getExtensionFilters().add(extensionFilter);
     }
     
-    public void handle(ActionEvent t) 
+    public void handle(ActionEvent event) 
     {
       File file = fileChooser.showOpenDialog(stage);
       if (file != null) 
       {
         onFileLoaded.accept(file);
       }
+    }
+  }
+  
+  private static class OnViewActionHandler implements EventHandler<ActionEvent>
+  {
+    private Runnable onAction;
+    
+    public OnViewActionHandler(Runnable onAction)
+    {
+      this.onAction = onAction;
+    }
+    
+    public void handle(ActionEvent event) 
+    {
+      onAction.run();
     }
   }
 }

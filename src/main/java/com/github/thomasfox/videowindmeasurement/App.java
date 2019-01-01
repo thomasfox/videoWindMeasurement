@@ -47,8 +47,13 @@ public class App extends Application
 {
   private Stage stage;
   
-  private AppMenuBar menuBar = new AppMenuBar(stage, this::loadVideoFile, this::loadLandmarkFile);
+  private PlayerPane playerPane;
 
+  private ViewerPane viewerPane;
+  
+  private Scene playerScene;
+
+  private Scene viewerScene;
   
   @Override
   public void start(Stage stage) throws MalformedURLException 
@@ -59,7 +64,7 @@ public class App extends Application
     VBox root = new VBox();
     Scene scene = new Scene(root, 1000, 900);
     
-    root.getChildren().addAll(menuBar);
+    root.getChildren().addAll(createMenuBar());
     
     stage.setScene(scene);
     stage.sizeToScene();
@@ -69,37 +74,58 @@ public class App extends Application
   public void loadVideoFile(File file)
   {
     VBox root = new VBox();
-    Scene scene = new Scene(root, 1000, 900);
+    playerScene = new Scene(root, 1000, 900);
     
-    PlayerPane playerPane = new PlayerPane();
+    playerPane = new PlayerPane();
     playerPane.loadFile(file);
     
-    root.getChildren().addAll(menuBar);
+    root.getChildren().addAll(createMenuBar());
     root.getChildren().addAll(playerPane);
     
-    stage.setScene(scene);
-    stage.sizeToScene();
-    stage.show();
+    viewVideo();
+  }
+  
+  public void viewVideo()
+  {
+    if (playerScene != null)
+    {
+      stage.setScene(playerScene);
+      stage.sizeToScene();
+      stage.show();
+    }
   }
   
   public void loadLandmarkFile(File file)
   {
     VBox root = new VBox();
-    Scene scene = new Scene(root, 1000, 900);
+    viewerScene = new Scene(root, 1000, 900);
     
-    ViewerPane viewerPane = new ViewerPane(scene);
+    viewerPane = new ViewerPane(viewerScene);
+    viewerPane.loadFile(file);
     
-    root.getChildren().addAll(menuBar);
+    root.getChildren().addAll(createMenuBar());
     root.getChildren().addAll(viewerPane);
     
-    stage.setScene(scene);
-    stage.sizeToScene();
-    stage.show();
-    viewerPane.loadFile(file);
+    viewLandmarks();
+  }
+  
+  public void viewLandmarks()
+  {
+    if (viewerScene != null)
+    {
+      stage.setScene(viewerScene);
+      stage.sizeToScene();
+      stage.show();
+    }
   }
   
   public static void main(String[] args) 
   {
-      launch(args);
+    launch(args);
+  }
+  
+  public AppMenuBar createMenuBar()
+  {
+    return new AppMenuBar(stage, this::loadVideoFile, this::loadLandmarkFile, this::viewVideo, this::viewLandmarks);
   }
 }
