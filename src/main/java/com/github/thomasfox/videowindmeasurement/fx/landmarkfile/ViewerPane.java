@@ -27,6 +27,8 @@ public class ViewerPane extends BorderPane
 
   private ImageView imageView = new ImageView();
 
+  private final BackButton backButton;
+  
   private final ForwardButton forwardButton;
   
   private final HBox controlBar = new HBox();
@@ -34,6 +36,8 @@ public class ViewerPane extends BorderPane
   private List<Landmarks> landmarksList;
   
   private Scene scene;
+  
+  private int landmarksIndex = 0;
   
   public ViewerPane(Scene scene)
   {
@@ -47,6 +51,9 @@ public class ViewerPane extends BorderPane
     Pane imagePane = new Pane(imageView, canvasLayer);
     setCenter(imagePane);
  
+    backButton = new BackButton(this);
+    controlBar.getChildren().add(backButton);
+
     forwardButton = new ForwardButton(this);
     controlBar.getChildren().add(forwardButton);
 
@@ -56,8 +63,7 @@ public class ViewerPane extends BorderPane
   public void setLandmarksList(List<Landmarks> landmarksList)
   {
     this.landmarksList = landmarksList;
-    forwardButton.setLandmarksList(landmarksList);
-    show(landmarksList.get(0));
+    setLandmarksIndex(0);
   }
   
   public List<Landmarks> getLandmarksList()
@@ -101,5 +107,28 @@ public class ViewerPane extends BorderPane
       GraphicsUtil.drawCross(graphicsContext, position.getX() * scale, position.getY() * scale);
       positionNumber++;
     }
+  }
+  
+  public int getLandmarksIndex() 
+  {
+    return landmarksIndex;
+  }
+  
+  public void setLandmarksIndex(int newPosition)
+  {
+    if (newPosition < 0)
+    {
+      landmarksIndex = 0;
+    }
+    else if (newPosition >= landmarksList.size())
+    {
+      landmarksIndex = landmarksList.size() - 1;
+    }
+    else
+    {
+      landmarksIndex = newPosition;
+    }
+    Landmarks landmarks = landmarksList.get(landmarksIndex);
+    show(landmarks);
   }
 }

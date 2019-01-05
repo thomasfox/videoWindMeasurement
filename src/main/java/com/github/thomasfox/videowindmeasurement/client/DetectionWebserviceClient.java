@@ -56,7 +56,6 @@ public class DetectionWebserviceClient
   
   public static void trainDetector(File zipfile)
   {
-    System.out.println("file length : " + zipfile.length());
     try
     {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -65,7 +64,6 @@ public class DetectionWebserviceClient
         IOUtils.copy(inputStream, baos);
         baos.flush();
       }
-      System.out.println("byte array length : " + baos.size());
  
       URL url = new URL(BASE_URL + "/train");
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();

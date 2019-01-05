@@ -92,7 +92,7 @@ public class Box implements Cloneable
   
   public int getRotationBin(int numberOfBins)
   {
-    if (parts.size() != 3)
+    if (parts.size() < 3)
     {
       return -1;
     }

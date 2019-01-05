@@ -171,7 +171,14 @@ public class App extends Application
       {
         throw new RuntimeException(e);
       }
-      DetectionWebserviceClient.trainDetector(tmpZipfile);
+      try
+      {
+        DetectionWebserviceClient.trainDetector(tmpZipfile);
+      }
+      catch (Exception e)
+      {
+        System.out.println(e);
+      }
     }
     finally
     {
