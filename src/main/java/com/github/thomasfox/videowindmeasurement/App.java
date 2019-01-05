@@ -32,13 +32,24 @@
 package com.github.thomasfox.videowindmeasurement;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.github.thomasfox.videowindmeasurement.client.DetectionWebserviceClient;
 import com.github.thomasfox.videowindmeasurement.fx.AppMenuBar;
 import com.github.thomasfox.videowindmeasurement.fx.landmarkfile.ViewerPane;
 import com.github.thomasfox.videowindmeasurement.fx.video.PlayerPane;
 import com.github.thomasfox.videowindmeasurement.model.Landmarks;
+import com.github.thomasfox.videowindmeasurement.xml.Dataset;
+import com.github.thomasfox.videowindmeasurement.xml.ImageMeta;
 import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter;
 
 import javafx.application.Application;
@@ -46,8 +57,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class App extends Application 
+public class App extends Application
 {
+  private static final String ZIP_TMPFILE = "landmarks.zip.tmp";
+  
   private Stage stage;
   
   private PlayerPane playerPane;
@@ -109,7 +122,8 @@ public class App extends Application
     
     viewerPane = new ViewerPane(viewerScene);
     File directory = file.getParentFile();
-    List<Landmarks> landmarksList = LandmarksXmlWriter.toLandmarks(LandmarksXmlWriter.unmarshal(file), directory);
+    Dataset dataset = LandmarksXmlWriter.unmarshal(file);
+    List<Landmarks> landmarksList = LandmarksXmlWriter.toLandmarks(dataset, directory);
     viewerPane.setLandmarksList(landmarksList);
     if (playerPane != null)
     {
@@ -118,6 +132,51 @@ public class App extends Application
     
     root.getChildren().addAll(createMenuBar());
     root.getChildren().addAll(viewerPane);
+    
+    File tmpZipfile = new File(directory, ZIP_TMPFILE);
+    try
+    {
+      try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmpZipfile)))
+      {
+        out.putNextEntry(new ZipEntry("landmarks.xml"));
+        try (InputStream landmarksInputStream = FileUtils.openInputStream(new File(directory, "landmarks.xml"))) 
+        {
+          IOUtils.copy(landmarksInputStream, out);
+        }
+        out.putNextEntry(new ZipEntry("landmarks_0.xml"));
+        try (InputStream landmarksInputStream = FileUtils.openInputStream(new File(directory, "landmarks_0.xml"))) 
+        {
+          IOUtils.copy(landmarksInputStream, out);
+        }
+        out.putNextEntry(new ZipEntry("landmarks_1.xml"));
+        try (InputStream landmarksInputStream = FileUtils.openInputStream(new File(directory, "landmarks_1.xml"))) 
+        {
+          IOUtils.copy(landmarksInputStream, out);
+        }
+        out.putNextEntry(new ZipEntry("landmarks_2.xml"));
+        try (InputStream landmarksInputStream = FileUtils.openInputStream(new File(directory, "landmarks_2.xml"))) 
+        {
+          IOUtils.copy(landmarksInputStream, out);
+        }
+        for (ImageMeta imageMeta : dataset.getImages().getImages())
+        {
+          out.putNextEntry(new ZipEntry(imageMeta.getFile()));
+          try (InputStream imageInputStream = FileUtils.openInputStream(new File(directory, imageMeta.getFile())))
+          {
+            IOUtils.copy(imageInputStream, out);
+          }
+        }
+      }
+      catch (IOException e)
+      {
+        throw new RuntimeException(e);
+      }
+      DetectionWebserviceClient.trainDetector(tmpZipfile);
+    }
+    finally
+    {
+      FileUtils.deleteQuietly(tmpZipfile);
+    }
     
     viewLandmarks();
   }

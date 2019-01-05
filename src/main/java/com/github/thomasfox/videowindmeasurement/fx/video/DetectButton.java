@@ -1,22 +1,12 @@
 package com.github.thomasfox.videowindmeasurement.fx.video;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.IOUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thomasfox.videowindmeasurement.client.DetectionWebserviceClient;
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
 import com.github.thomasfox.videowindmeasurement.json.DetectedImage;
 import com.github.thomasfox.videowindmeasurement.json.DetectedImageList;
 import com.github.thomasfox.videowindmeasurement.json.Detection;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.SnapshotParameters;
@@ -97,45 +87,23 @@ public class DetectButton extends Button
       GraphicsContext graphicsContext = canvasLayer.getGraphicsContext2D();
       graphicsContext.clearRect(0, 0, canvasLayer.getWidth(), canvasLayer.getHeight());
 
-      try
+      DetectedImageList imageList = DetectionWebserviceClient.detectInImage(image);
+      for (DetectedImage detectedImage  : imageList)
       {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
-        ImageIO.write(bufferedImage, "png", baos);
-        
-        URL url = new URL("http://localhost:50000/detect/image");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-  
-        connection.setRequestProperty("Content-Length", String.valueOf(baos.size()));
-        connection.setRequestProperty("Content-Type", "image/png");
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-        OutputStream out = connection.getOutputStream();
-        IOUtils.write(baos.toByteArray(), out);
-        DetectedImageList imageList = objectMapper.readValue(connection.getInputStream(), DetectedImageList.class);
-        for (DetectedImage detectedImage  : imageList)
+        for (Detection detection : detectedImage.detections)
         {
-          for (Detection detection : detectedImage.detections)
+          if (detection.right > mediaWidth || detection.bottom > mediaHeight)
           {
-            if (detection.right > mediaWidth || detection.bottom > mediaHeight)
-            {
-              continue;
-            }
-            graphicsContext.setStroke(Color.BLUE);
-            graphicsContext.setLineWidth(2);
-            graphicsContext.strokeRect(
-                detection.left * scale,
-                detection.top * scale,
-                (detection.right - detection.left) * scale,
-                (detection.bottom - detection.top) * scale);
+            continue;
           }
+          graphicsContext.setStroke(Color.BLUE);
+          graphicsContext.setLineWidth(2);
+          graphicsContext.strokeRect(
+              detection.left * scale,
+              detection.top * scale,
+              (detection.right - detection.left) * scale,
+              (detection.bottom - detection.top) * scale);
         }
-        
-      }
-      catch (Exception e) 
-      {
-        throw new RuntimeException(e);
       }
     }
 
