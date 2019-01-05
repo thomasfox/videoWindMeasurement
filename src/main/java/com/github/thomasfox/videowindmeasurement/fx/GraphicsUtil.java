@@ -1,6 +1,7 @@
 package com.github.thomasfox.videowindmeasurement.fx;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class GraphicsUtil
 {
@@ -50,4 +51,27 @@ public class GraphicsUtil
       }
     }
   }
+  
+  public static Color getColor(int index, int modulus)
+  {
+    return getColor(index % modulus);
+  }
+  
+  public static Color getColor(int index)
+  {
+    if (index == 0)
+    {
+      return Color.BLACK;
+    }
+    if (index == 1)
+    {
+      return Color.WHITE;
+    }
+    if (index == 2)
+    {
+      return Color.RED;
+    }
+    return Color.YELLOW;
+  }
+
 }

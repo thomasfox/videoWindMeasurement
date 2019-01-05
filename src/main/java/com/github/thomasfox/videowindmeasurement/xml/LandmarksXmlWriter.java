@@ -21,6 +21,8 @@ import javafx.scene.image.Image;
 
 public class LandmarksXmlWriter
 {
+  public static final int NUMBER_OF_ROTATION_BINS = 3;
+  
   private Dataset dataset = new Dataset();
  
   public LandmarksXmlWriter()
@@ -75,12 +77,12 @@ public class LandmarksXmlWriter
   
   public void saveRotationBinsToXML(String xmlFilenamePrefix, File directory)
   {
-    for (int rotationBin=0; rotationBin < 3; rotationBin++)
+    for (int rotationBin = 0; rotationBin < NUMBER_OF_ROTATION_BINS; rotationBin++)
     {
       Dataset singleClassDataset = dataset.clone();
       for (ImageMeta image : singleClassDataset.getImages().getImages())
       {
-        if (image.getBox().getRotationBin(3) != rotationBin)
+        if (image.getBox().getRotationBin(NUMBER_OF_ROTATION_BINS) != rotationBin)
         {
           image.setBox(null);
         }

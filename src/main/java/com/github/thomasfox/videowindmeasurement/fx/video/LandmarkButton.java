@@ -1,5 +1,8 @@
 package com.github.thomasfox.videowindmeasurement.fx.video;
 
+import static com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil.getColor;
+import static com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter.NUMBER_OF_ROTATION_BINS;
+
 import java.util.List;
 
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
@@ -14,7 +17,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 
 public class LandmarkButton extends Button
@@ -121,22 +123,11 @@ public class LandmarkButton extends Button
         
         canvasLayer.setOnMouseClicked((event) -> {
           GraphicsContext graphicsContext = canvasLayer.getGraphicsContext2D();
-          if (markIndex == 0)
-          {
-            graphicsContext.setStroke(Color.BLACK);
-          }
-          else if (markIndex == 1)
-          {
-            graphicsContext.setStroke(Color.WHITE);
-          }
-          else 
-          {
-            graphicsContext.setStroke(Color.RED);
-          }
+          graphicsContext.setStroke(getColor(markIndex));
           GraphicsUtil.drawCross(graphicsContext, event.getX(), event.getY());
           markIndex ++;
           currentLandmarks.getPositions().add(new Position(event.getX() / scale, event.getY() / scale));
-          if (markIndex > 2)
+          if (markIndex > NUMBER_OF_ROTATION_BINS)
           {
             landmarksList.add(currentLandmarks);
             abortLandmark();

@@ -1,6 +1,8 @@
 package com.github.thomasfox.videowindmeasurement.fx.video;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil.getColor;
+import static com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter.NUMBER_OF_ROTATION_BINS;
+
 import com.github.thomasfox.videowindmeasurement.client.DetectionWebserviceClient;
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
 import com.github.thomasfox.videowindmeasurement.json.DetectedImage;
@@ -46,8 +48,6 @@ public class DetectButton extends Button
     private Canvas canvasLayer;
     
     private PlayButton playButton;
-    
-    private ObjectMapper objectMapper = new ObjectMapper();
     
     public DetectActionHandler(PlayButton playButton)
     {
@@ -103,13 +103,38 @@ public class DetectButton extends Button
               detection.top * scale,
               (detection.right - detection.left) * scale,
               (detection.bottom - detection.top) * scale);
+          
+          graphicsContext.setLineWidth(2);
+          graphicsContext.setStroke(getColor(detection.index, NUMBER_OF_ROTATION_BINS));
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale,
+              detection.getMiddleX() * scale + 2, detection.top * scale);
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale,
+              detection.right * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale);
+
+          graphicsContext.setStroke(getColor(detection.index + 1, NUMBER_OF_ROTATION_BINS));
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale + 2,
+              detection.right * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale, detection.getMiddleY() * scale + 2,
+              detection.left * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
+          
+          graphicsContext.setStroke(getColor(detection.index + 2, NUMBER_OF_ROTATION_BINS));
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale, detection.getMiddleY() * scale,
+              detection.left * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale);
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale, detection.getMiddleY() * scale,
+              detection.getMiddleX() * scale, detection.top * scale);
         }
       }
     }
-
+    
     public void setMediaView(MediaView mediaView)
     {
       this.mediaView = mediaView;
     }
   }
-}
+} 

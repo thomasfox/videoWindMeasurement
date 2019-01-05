@@ -1,13 +1,13 @@
 package com.github.thomasfox.videowindmeasurement.fx.landmarkfile;
 
-import java.io.File;
+import static com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil.getColor;
+
 import java.util.List;
 
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
 import com.github.thomasfox.videowindmeasurement.model.Landmarks;
 import com.github.thomasfox.videowindmeasurement.model.Position;
 import com.github.thomasfox.videowindmeasurement.xml.Box;
-import com.github.thomasfox.videowindmeasurement.xml.LandmarksXmlWriter;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -97,18 +97,7 @@ public class ViewerPane extends BorderPane
     int positionNumber = 0;
     for (Position position : landmarks.getPositions())
     {
-      if (positionNumber == 0)
-      {
-        graphicsContext.setStroke(Color.BLACK);
-      }
-      else if (positionNumber == 1)
-      {
-        graphicsContext.setStroke(Color.WHITE);
-      }
-      else 
-      {
-        graphicsContext.setStroke(Color.RED);
-      }
+      graphicsContext.setStroke(getColor(positionNumber));
       GraphicsUtil.drawCross(graphicsContext, position.getX() * scale, position.getY() * scale);
       positionNumber++;
     }
