@@ -2,6 +2,7 @@ package com.github.thomasfox.videowindmeasurement.fx.landmarkfile;
 
 import static com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil.getColor;
 
+import java.io.File;
 import java.util.List;
 
 import com.github.thomasfox.videowindmeasurement.fx.GraphicsUtil;
@@ -14,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -29,11 +31,15 @@ public class ViewerPane extends BorderPane
 
   private final BackButton backButton;
   
+  private final LandmarksIndex landmarksIndexLabel;
+  
   private final ForwardButton forwardButton;
   
   private final HBox controlBar = new HBox();
   
   private List<Landmarks> landmarksList;
+  
+  private File landmarksDirectory;
   
   private Scene scene;
   
@@ -53,6 +59,15 @@ public class ViewerPane extends BorderPane
  
     backButton = new BackButton(this);
     controlBar.getChildren().add(backButton);
+    
+    Label spacer = new Label("     ");
+    controlBar.getChildren().add(spacer);
+
+    landmarksIndexLabel = new LandmarksIndex();
+    controlBar.getChildren().add(landmarksIndexLabel);
+    
+    spacer = new Label("     ");
+    controlBar.getChildren().add(spacer);
 
     forwardButton = new ForwardButton(this);
     controlBar.getChildren().add(forwardButton);
@@ -60,10 +75,12 @@ public class ViewerPane extends BorderPane
     setBottom(controlBar);
   }
   
-  public void setLandmarksList(List<Landmarks> landmarksList)
+  public void setLandmarksList(List<Landmarks> landmarksList, File landmarksDirectory)
   {
     this.landmarksList = landmarksList;
+    this.landmarksDirectory = landmarksDirectory;
     setLandmarksIndex(0);
+    landmarksIndexLabel.setMaxIndex(landmarksList.size());
   }
   
   public List<Landmarks> getLandmarksList()
@@ -114,6 +131,11 @@ public class ViewerPane extends BorderPane
     return landmarksIndex;
   }
   
+  public File getLandmarksDirectory()
+  {
+    return landmarksDirectory;
+  }
+  
   public void setLandmarksIndex(int newPosition)
   {
     if (newPosition < 0)
@@ -128,6 +150,7 @@ public class ViewerPane extends BorderPane
     {
       landmarksIndex = newPosition;
     }
+    landmarksIndexLabel.setIndex(landmarksIndex + 1);
     Landmarks landmarks = landmarksList.get(landmarksIndex);
     show(landmarks);
   }

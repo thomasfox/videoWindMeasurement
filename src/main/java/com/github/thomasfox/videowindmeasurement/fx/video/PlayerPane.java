@@ -163,10 +163,11 @@ public class PlayerPane extends BorderPane
     detectButton.setCanvasLayer(canvasLayer);
   }
   
-  public void setLandmarksList(List<Landmarks> landmarksList)
+  public void setLandmarksList(List<Landmarks> landmarksList, File landmarksDirectory)
   {
     this.landmarksList = landmarksList;
     landmarkButton.setLandmarksList(landmarksList);
     saveLandmarksButton.setLandmarksList(landmarksList);
+    saveLandmarksButton.setDirectory(landmarksDirectory);
   }
 }

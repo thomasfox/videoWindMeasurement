@@ -96,7 +96,7 @@ public class App extends Application
     playerPane.loadFile(file);
     if (viewerPane != null)
     {
-      playerPane.setLandmarksList(viewerPane.getLandmarksList());
+      playerPane.setLandmarksList(viewerPane.getLandmarksList(), viewerPane.getLandmarksDirectory());
     }
     
     root.getChildren().addAll(createMenuBar());
@@ -124,10 +124,10 @@ public class App extends Application
     File directory = file.getParentFile();
     Dataset dataset = LandmarksXmlWriter.unmarshal(file);
     List<Landmarks> landmarksList = LandmarksXmlWriter.toLandmarks(dataset, directory);
-    viewerPane.setLandmarksList(landmarksList);
+    viewerPane.setLandmarksList(landmarksList, directory);
     if (playerPane != null)
     {
-      playerPane.setLandmarksList(landmarksList);
+      playerPane.setLandmarksList(landmarksList, directory);
     }
     
     root.getChildren().addAll(createMenuBar());

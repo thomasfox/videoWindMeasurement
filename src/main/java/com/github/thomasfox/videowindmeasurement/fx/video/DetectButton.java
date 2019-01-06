@@ -112,22 +112,22 @@ public class DetectButton extends Button
           graphicsContext.strokeLine(
               detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale,
               detection.right * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale);
-
-          graphicsContext.setStroke(getColor(detection.index + 1, NUMBER_OF_ROTATION_BINS));
-          graphicsContext.strokeLine(
-              detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale + 2,
-              detection.right * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
-          graphicsContext.strokeLine(
-              detection.getMiddleX() * scale, detection.getMiddleY() * scale + 2,
-              detection.left * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
           
-          graphicsContext.setStroke(getColor(detection.index + 2, NUMBER_OF_ROTATION_BINS));
+          graphicsContext.setStroke(getColor(detection.index + 1, NUMBER_OF_ROTATION_BINS));
           graphicsContext.strokeLine(
               detection.getMiddleX() * scale, detection.getMiddleY() * scale,
               detection.left * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale);
           graphicsContext.strokeLine(
               detection.getMiddleX() * scale, detection.getMiddleY() * scale,
               detection.getMiddleX() * scale, detection.top * scale);
+
+          graphicsContext.setStroke(getColor(detection.index + 2, NUMBER_OF_ROTATION_BINS));
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale + 2, detection.getMiddleY() * scale + 2,
+              detection.right * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
+          graphicsContext.strokeLine(
+              detection.getMiddleX() * scale, detection.getMiddleY() * scale + 2,
+              detection.left * scale, (detection.getMiddleY() + 0.2887 * detection.getWidth()) * scale + 2);
         }
       }
     }

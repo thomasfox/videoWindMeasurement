@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 
 public class Landmarks
 {
+  private static final double BOXSIZE_RADIUS_RATIO = 2.5d;
+  
   private List<Position> positions = new ArrayList<>();
   
   private Image image;
@@ -35,13 +37,13 @@ public class Landmarks
     double radius = (distance(positions.get(0).getX(), positions.get(0).getY(), boxCenterX, boxCenterY)
         + distance(positions.get(1).getX(), positions.get(1).getY(), boxCenterX, boxCenterY)
         + distance(positions.get(2).getX(), positions.get(2).getY(), boxCenterX, boxCenterY)) / 3;
-    Double boxLeftX = boxCenterX - radius;
-    Double boxTopY = boxCenterY - radius;
+    Double boxLeftX = boxCenterX - (radius * BOXSIZE_RADIUS_RATIO / 2);
+    Double boxTopY = boxCenterY - (radius * BOXSIZE_RADIUS_RATIO / 2);
     Box box = new Box();
     box.setTop(new Double(boxTopY).intValue());
     box.setLeft(new Double(boxLeftX).intValue());
-    box.setHeight(new Double(2.5 * radius).intValue());
-    box.setWidth(new Double(2.5 * radius).intValue());
+    box.setHeight(new Double(BOXSIZE_RADIUS_RATIO * radius).intValue());
+    box.setWidth(new Double(BOXSIZE_RADIUS_RATIO * radius).intValue());
     return box;
 
   }
@@ -50,7 +52,8 @@ public class Landmarks
   {
     Double boxCenterY = (positions.get(0).getY()
         + positions.get(1).getY() 
-        + positions.get(2).getY()) / 3d;
+        + positions.get(2).getY()
+        + 2 * positions.get(3).getY()) / 5d;
     return boxCenterY;
   }
 
@@ -58,7 +61,8 @@ public class Landmarks
   {
     Double boxCenterX = (positions.get(0).getX()
         + positions.get(1).getX() 
-        + positions.get(2).getX()) / 3d;
+        + positions.get(2).getX()
+        + 2 * positions.get(3).getX()) / 5d;
     return boxCenterX;
   }
   
